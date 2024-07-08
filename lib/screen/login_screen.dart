@@ -1,6 +1,9 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
+import '../model/book_model.dart';
 import 'intro_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -27,6 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              _buildBooksCarousel(),
+               SizedBox(
+                height: 40,
+              ),
               _buildTextField(userNameController, 'User Name'),
               SizedBox(
                 height: 10,
@@ -48,7 +55,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   );
                 },
                 child: Text('Log In'),
-              )
+              ),
+              TextButton(
+                onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RegisterScreen(
+                        isDarkMode: widget.isDarkMode,
+                        toggleTheme: widget.toggleTheme,
+                      ),
+                    ),
+                  );
+                },
+                child: Text("Don't have an account? Register")
+              ),
             ],
           ),
         ),
@@ -67,6 +88,33 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       obscureText: obscureText,
+    );
+  }
+
+  Widget _buildBooksCarousel(){
+    return CarouselSlider.builder(
+      itemCount: books.length,
+      itemBuilder: (context, index, child) {
+        final book = books[index];
+        return _buildBookItem(book);
+      },
+      options: CarouselOptions(
+        autoPlay: true,
+        enlargeCenterPage: true,
+        aspectRatio: 2,
+        autoPlayInterval: Duration(seconds: 3)
+      ),
+    );
+  }
+  Widget _buildBookItem(Book book){
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(book.imageURL),
+          fit: BoxFit.cover,
+        ),
+      ),
     );
   }
 }
