@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../model/book_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'book_detail.dart';
+import 'cart_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -31,15 +32,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Books App',
-          style: TextStyle(fontWeight: FontWeight.w200, fontSize: 30),
-        ),
+        title: Text('Books App'),
         centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
             onPressed: widget.toggleTheme,
+          ),
+          IconButton(
+            icon: Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CartScreen()),
+              );
+            },
+            
           ),
         ],
       ),
@@ -60,10 +68,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   prefixIcon: Icon(Icons.search),
                 ),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               _buildSectionTitle('Books Collection', widget.isDarkMode),
-              SizedBox(height: 20,),
-              _buildBookSlider(displayBooks),
+              SizedBox(
+                height: 20,
+              ),
+              buildBookSlider(displayBooks),
+              SizedBox(
+                height: 20,
+              ),
+              _buildSectionTitle('More Books', widget.isDarkMode),
+              SizedBox(
+                height: 20,
+              ),
+              buildBookList(displayBooks),
             ],
           ),
         ),
@@ -71,17 +91,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title, bool isDarkMode){
+  Widget _buildSectionTitle(String title, bool isDarkMode) {
     return Text(
       title,
       style: TextStyle(
-        fontSize: 18, 
+        fontSize: 18,
         color: isDarkMode ? Colors.white : Colors.black,
       ),
     );
   }
 
-  Widget _buildBookSlider(List<Book> books) {
+  Widget buildBookSlider(List<Book> books) {
     return CarouselSlider.builder(
       itemCount: books.length,
       itemBuilder: (context, index, child) {
@@ -99,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
                     image: AssetImage(book.imageURL),
                     fit: BoxFit.cover,
@@ -107,17 +127,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Positioned(
-                bottom: 15,
+                bottom: 0,
                 left: 0,
                 right: 0,
-                child: Text(
-                  book.title,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(20),
+                    ),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    book.title,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -130,6 +159,44 @@ class _HomeScreenState extends State<HomeScreen> {
         enlargeCenterPage: true,
         aspectRatio: 1.7,
         autoPlayInterval: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  Widget buildBookList(List<Book> books) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      height: 250,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: books.length,
+        itemBuilder: (context, index) {
+          final book = books[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BookDetailScreen(book: book)),
+              );
+            },
+            child: Stack(
+              children: [
+                Container(
+                  width: 180,
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: AssetImage(book.imageURL),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

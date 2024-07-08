@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../main.dart';
 import '../model/book_model.dart';
+import 'cart_screen.dart';
 
 class BookDetailScreen extends StatelessWidget {
   final Book book;
@@ -19,19 +21,37 @@ class BookDetailScreen extends StatelessWidget {
                     width: 55,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.grey[400],
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Icon(Icons.keyboard_arrow_left,
-                        size: 25, color: Colors.black),
+                    child: Icon(
+                      Icons.keyboard_arrow_left,
+                      size: 25,
+                      color: Colors.black,
+                    ),
                   ),
+                ),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.shopping_cart),
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CartScreen(),
+                      ),
+                    ),
+                  },
+                ),
+                SizedBox(
+                  width: 10,
                 ),
               ],
             ),
           ),
           Center(
             child: SizedBox(
-              height: 300,
+              height: 250,
               child: Hero(
                 tag: book.imageURL,
                 child: ClipRRect(
@@ -41,12 +61,12 @@ class BookDetailScreen extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 30,
+            height: 20,
           ),
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: Colors.grey[400],
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(50),
                   topRight: Radius.circular(50),
@@ -59,7 +79,6 @@ class BookDetailScreen extends StatelessWidget {
                   children: [
                     Text(
                       book.title,
-                      
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
@@ -73,8 +92,15 @@ class BookDetailScreen extends StatelessWidget {
                         fontSize: 18,
                       ),
                     ),
-                    SizedBox(
-                      height: 25,
+                    // SizedBox(
+                    //   height: 18,
+                    // ),
+                    Text(
+                      '\$' + book.price,
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 18,
+                      ),
                     ),
                     Text(
                       "Book Description",
@@ -90,7 +116,21 @@ class BookDetailScreen extends StatelessWidget {
                         color: Colors.black,
                         fontSize: 18,
                       ),
-                    )
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          cart.add(book);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('${book.title} added to cart.'),
+                          ));
+                        },
+                        child: Text('Add to cart'),
+                      ),
+                    ),
                   ],
                 ),
               ),
